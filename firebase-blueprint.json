@@ -1,0 +1,113 @@
+{
+  "entities": {
+    "StudentProfile": {
+      "title": "StudentProfile",
+      "description": "Student game progress, inventory, and scores tied to their student code",
+      "type": "object",
+      "properties": {
+        "studentCode": {
+          "type": "string",
+          "description": "Unique student authentication code or student ID",
+          "minLength": 2,
+          "maxLength": 32,
+          "pattern": "^[a-zA-Z0-9_-]+$"
+        },
+        "studentName": {
+          "type": "string",
+          "description": "Student display name or nickname",
+          "minLength": 1,
+          "maxLength": 30
+        },
+        "totalScore": {
+          "type": "number",
+          "description": "Accumulated total game score"
+        },
+        "totalCoins": {
+          "type": "number",
+          "description": "Coins earned to buy alchemist costumes"
+        },
+        "equippedCostume": {
+          "type": "string",
+          "description": "Currently worn costume ID",
+          "maxLength": 50
+        },
+        "unlockedCostumes": {
+          "type": "array",
+          "description": "List of costume IDs owned by the student"
+        },
+        "completedStages": {
+          "type": "array",
+          "description": "Array of stage IDs completed"
+        },
+        "stageStars": {
+          "type": "object",
+          "description": "Stars earned per stage (e.g. stage_1: 3)"
+        },
+        "stageBestTimes": {
+          "type": "object",
+          "description": "Best clear time in seconds per stage"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "ISO date string or timestamp of last save"
+        }
+      },
+      "required": ["studentCode", "studentName", "totalScore", "totalCoins", "equippedCostume"]
+    },
+    "LeaderboardEntry": {
+      "title": "LeaderboardEntry",
+      "description": "Public ranking record for each student",
+      "type": "object",
+      "properties": {
+        "studentCode": {
+          "type": "string",
+          "description": "Student authentication code",
+          "minLength": 2,
+          "maxLength": 32,
+          "pattern": "^[a-zA-Z0-9_-]+$"
+        },
+        "studentName": {
+          "type": "string",
+          "description": "Student display name",
+          "minLength": 1,
+          "maxLength": 30
+        },
+        "totalScore": {
+          "type": "number",
+          "description": "Total score achieved across all stages"
+        },
+        "totalStars": {
+          "type": "number",
+          "description": "Total stars accumulated"
+        },
+        "stagesCleared": {
+          "type": "number",
+          "description": "Number of stages completed"
+        },
+        "equippedCostume": {
+          "type": "string",
+          "description": "Costume worn by student on ranking"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp of ranking entry"
+        }
+      },
+      "required": ["studentCode", "studentName", "totalScore", "totalStars", "stagesCleared"]
+    }
+  },
+  "firestore": {
+    "/students/{studentCode}": {
+      "schema": {
+        "$ref": "#/entities/StudentProfile"
+      },
+      "description": "Student game profile, stage progress, and wardrobe"
+    },
+    "/leaderboard/{studentCode}": {
+      "schema": {
+        "$ref": "#/entities/LeaderboardEntry"
+      },
+      "description": "Classroom leaderboard entries for mixture separation simulation"
+    }
+  }
+}

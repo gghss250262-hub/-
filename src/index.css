@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    user-select: none;
+    -webkit-user-select: none;
+    background-color: #0f172a;
+    color: #f8fafc;
+    overflow-x: hidden;
+  }
+
+  .font-alchemy {
+    font-family: 'Jua', 'Noto Sans KR', cursive, sans-serif;
+  }
+}
+
+/* Custom animations for laboratory effects */
+@keyframes bubble {
+  0% { transform: translateY(0) scale(0.8); opacity: 0.3; }
+  50% { opacity: 0.8; }
+  100% { transform: translateY(-40px) scale(1.2); opacity: 0; }
+}
+
+@keyframes steam {
+  0% { transform: translateY(0) scale(1); opacity: 0.5; }
+  100% { transform: translateY(-30px) scale(1.5); opacity: 0; }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { filter: drop-shadow(0 0 4px rgba(245, 158, 11, 0.4)); }
+  50% { filter: drop-shadow(0 0 14px rgba(245, 158, 11, 0.8)); }
+}
+
+.anim-bubble {
+  animation: bubble 1.8s infinite ease-in;
+}
+
+.anim-steam {
+  animation: steam 2.2s infinite ease-out;
+}
+
+.glow-amber {
+  animation: pulseGlow 2s infinite ease-in-out;
+}

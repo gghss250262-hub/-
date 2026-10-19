@@ -1,0 +1,60 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isValidId(id) {
+      return id is string && id.size() >= 2 && id.size() <= 32 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function isValidStudentProfile(data, studentCode) {
+      return data.keys().hasAll(['studentCode', 'studentName', 'totalScore', 'totalCoins', 'equippedCostume'])
+        && data.keys().hasOnly(['studentCode', 'studentName', 'totalScore', 'totalCoins', 'equippedCostume', 'unlockedCostumes', 'completedStages', 'stageStars', 'stageBestTimes', 'updatedAt'])
+        && data.studentCode == studentCode
+        && data.studentName is string && data.studentName.size() >= 1 && data.studentName.size() <= 30
+        && data.totalScore is number && data.totalScore >= 0
+        && data.totalCoins is number && data.totalCoins >= 0
+        && data.equippedCostume is string && data.equippedCostume.size() <= 50
+        && (!('unlockedCostumes' in data) || (data.unlockedCostumes is list && data.unlockedCostumes.size() <= 30))
+        && (!('completedStages' in data) || (data.completedStages is list && data.completedStages.size() <= 30))
+        && (!('updatedAt' in data) || (data.updatedAt is string && data.updatedAt.size() <= 60));
+    }
+
+    function isValidLeaderboardEntry(data, studentCode) {
+      return data.keys().hasAll(['studentCode', 'studentName', 'totalScore', 'totalStars', 'stagesCleared'])
+        && data.keys().hasOnly(['studentCode', 'studentName', 'totalScore', 'totalStars', 'stagesCleared', 'equippedCostume', 'updatedAt'])
+        && data.studentCode == studentCode
+        && data.studentName is string && data.studentName.size() >= 1 && data.studentName.size() <= 30
+        && data.totalScore is number && data.totalScore >= 0
+        && data.totalStars is number && data.totalStars >= 0
+        && data.stagesCleared is number && data.stagesCleared >= 0
+        && (!('equippedCostume' in data) || (data.equippedCostume is string && data.equippedCostume.size() <= 50))
+        && (!('updatedAt' in data) || (data.updatedAt is string && data.updatedAt.size() <= 60));
+    }
+
+    // Default deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Student profile collection
+    match /students/{studentCode} {
+      allow read: if isValidId(studentCode);
+      allow create: if isValidId(studentCode) && isValidStudentProfile(incoming(), studentCode);
+      allow update: if isValidId(studentCode) && isValidStudentProfile(incoming(), studentCode);
+      allow delete: if false;
+    }
+
+    // Classroom leaderboard collection
+    match /leaderboard/{studentCode} {
+      allow read: if true;
+      allow create: if isValidId(studentCode) && isValidLeaderboardEntry(incoming(), studentCode);
+      allow update: if isValidId(studentCode) && isValidLeaderboardEntry(incoming(), studentCode);
+      allow delete: if false;
+    }
+  }
+}

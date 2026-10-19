@@ -1,0 +1,6 @@
+{
+  "name": "연금술사의 물질 분리 연구소",
+  "description": "중학교 2학년 과학: 밀도, 끓는점, 용해도의 특성을 이용한 혼합물 분리 시뮬레이션 게임",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
